@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <main class="container signup-section">
+    <div class="section-content">
+      <h2>Log in</h2>
+
+      <form method="POST" action="/login">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ form.email.label }}
+          {{ form.email }}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label }}
+          {{ form.password }}
+        </div>
+
+        {{ form.submit(class="btn-primary") }}
+
+      </form>
+    </div>
+  </main>
+{% endblock %}

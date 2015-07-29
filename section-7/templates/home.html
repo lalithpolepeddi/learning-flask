@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <main class="hero-section">
+    <div class="container">
+      
+      <div class="section-tabs">
+        <div class="places">
+          {% for place in places %}
+            <article>
+              <a class="name" href="{{ place['url'] }}" target="_blank">{{ place['name'] }}</a>
+              <p class="walking-distance">{{ place['time'] }} min away</p>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="section-map">
+        <div class="nav">
+          <form method="POST" action="/home">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+              {% if form.address.errors %}
+                {% for error in form.address.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {{ form.address(placeholder="Explore nearby") }}
+            </div>
+            
+            {{ form.submit(class="btn-primary") }}
+          </form>
+        </div>
+
+        <div id="map"></div>
+      </div>
+      
+      <div class="clearfix"></div>
+    </div>
+  </main>
+
+  <script>
+    var planes = [
+      {% for place in places %}
+        ["<h3><a href='{{ place['url'] }}' target='_blank'>{{ place['name'] }}</a></h3> <p>{{ place['time'] }} min away</p>", {{ place['lat'] }}, {{ place['lng'] }} ],
+      {% endfor %}
+    ];
+
+    var map = L.map('map').setView([{{ my_coordinates[0] }}, {{ my_coordinates[1] }}], 15);
+    mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+    L.tileLayer(
+      'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; ' + mapLink + ' Contributors',
+        maxZoom: 18,
+      }
+    ).addTo(map);
+
+    for (var i = 0; i < planes.length; i++) {
+      marker = new L.marker([planes[i][1],planes[i][2]])
+        .bindPopup(planes[i][0])
+        .addTo(map);
+    }    
+  </script>
+
+{% endblock %}
